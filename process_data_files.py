@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import os
 '''
 Functions for processing chinese-vietnamese text files will be written here.
@@ -31,8 +32,9 @@ def has_chinese(json_file):
     '''
     Check if a json file contains chinese characters
     '''
-    with open(json_file, "r", encoding = "utf-8-sig") as json_file:
-        data = json.load(json_file)
+    # Convert to string representation for opening the file
+    with open(str(json_file), "r", encoding="utf-8-sig") as f:
+        data = json.load(f)
         for item in data:
             if len(item["text"]) == 1 and is_chinese_char(item["text"]):
                 return True
@@ -43,15 +45,23 @@ def delete_file_if_no_chinese(file_path):
     Delete a file if it does not contain chinese characters
     '''
     if not has_chinese(file_path):
-        print(f"Deleting {file_path} because it does not contain chinese characters")
-        os.remove(file_path)
+        print(f"Deleting {file_path.name} because it does not contain chinese characters")
+        # os.remove(file_path)
 
 def process_data_files(data_dir):
     '''
     Process all data files in a directory
     '''
-    for file in os.listdir(data_dir):
-        file_path = os.path.join(data_dir, file)
+    # Convert input to Path object and resolve to absolute path
+    data_path = Path(data_dir).resolve()
+    
+    # Get all JSON files sorted by page number
+    json_files = sorted(
+        data_path.glob('*.json'), 
+        key=lambda x: int(x.stem.split('_')[1])
+    )
+    
+    for file_path in json_files:
         delete_file_if_no_chinese(file_path)
 
 

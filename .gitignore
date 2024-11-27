@@ -1,5 +1,6 @@
-/extracted_text/
 *.pdf
 *.txt
+*.json
 *.docx
 *.doc
+__pycache__/

@@ -1,13 +1,8 @@
 import fitz  # PyMuPDF
 import json
 import os
-# import pandas as pd
-from io import StringIO
-# import easyocr
 import regex as re
-# from transformers import pipeline
-# from openpyxl import load_workbook
-# from xlsxwriter import Workbook 
+
 
 def extract_text_from_pdf(pdf_path, output_dir):
     # Open the PDF file
@@ -18,10 +13,10 @@ def extract_text_from_pdf(pdf_path, output_dir):
         os.makedirs(output_dir)
 
     for page_number in range(len(document)):
-        page_text_file= f"{output_dir}page_{page_number}.json" 
+        page_text_file= f"{output_dir}page_{page_number+1}.json" 
         
-        print(f"Processing page {page_number}")
-        print(f"Extracting text and bbox from page {page_number}")
+        print(f"Processing page {page_number+1}")
+        print(f"Extracting text and bbox from page {page_number+1}")
         
         page = document[page_number]
         dictionary_elements = page.get_text('dict')

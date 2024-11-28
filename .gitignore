@@ -3,3 +3,4 @@
 *.docx
 *.doc
 __pycache__/
+*.csv

@@ -2,8 +2,6 @@ import json
 from pathlib import Path
 import os
 import pandas as pd
-from copy import deepcopy
-from align_cn_viet_bboxes import *
 import numpy as np
 
 

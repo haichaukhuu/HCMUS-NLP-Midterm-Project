@@ -108,7 +108,7 @@ def process_data_files(data_dir) -> pd.DataFrame:
             df = pd.DataFrame(data)
 
             page_num = int(json_file.stem.split('_')[1])
-            df['page_num'] = page_num + 1 # Page number starts from 1
+            df['page_num'] = page_num 
 
             # Parse bbox coordinates to numpy array
             df['bbox'] = df['bbox'].apply(parse_bbox_coords)

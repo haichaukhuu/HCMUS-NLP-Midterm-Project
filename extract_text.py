@@ -13,10 +13,10 @@ def extract_text_from_pdf(pdf_path, output_dir):
         os.makedirs(output_dir)
 
     for page_number in range(len(document)):
-        page_text_file= f"{output_dir}page_{page_number+1}.json" 
+        page_text_file= f"{output_dir}page_{page_number}.json" 
         
-        print(f"Processing page {page_number+1}")
-        print(f"Extracting text and bbox from page {page_number+1}")
+        print(f"Processing page {page_number}")
+        print(f"Extracting text and bbox from page {page_number}")
         
         page = document[page_number]
         dictionary_elements = page.get_text('dict')

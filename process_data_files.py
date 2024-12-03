@@ -112,9 +112,9 @@ def parse_bbox_coords(bbox: list) -> np.ndarray:
 # Main processing function
 # -----------------%%%%%%%%-----------------
 
-def process_data_files(data_dir) -> pd.DataFrame:
+def process_data_files(data_dir) -> dict:
     '''
-    Process all data files in a directory
+    Process all data files in a directory and return a dictionary
     '''
     # Convert input to Path object and resolve to absolute path
     data_path = Path(data_dir).resolve()
@@ -134,35 +134,32 @@ def process_data_files(data_dir) -> pd.DataFrame:
         key=lambda x: int(x.stem.split('_')[1])
     )
 
-    # Read each JSON file into a dataframe
-    all_files_df = pd.DataFrame()
+    # Initialize a list to store all data
+    all_files_data = []
 
     for json_file in json_files:
         with open(json_file, 'r', encoding='utf-8-sig') as f:
             data = json.load(f)
-            df = pd.DataFrame(data)
 
             page_num = int(json_file.stem.split('_')[1])
-            df['page_num'] = page_num 
+            for item in data:
+                item['page_num'] = page_num
 
-            # Parse bbox coordinates to numpy array
-            df['bbox'] = df['bbox'].apply(parse_bbox_coords)
+                # Parse bbox coordinates to numpy array
+                item['bbox'] = parse_bbox_coords(item['bbox']).tolist()
 
-            # Remove non-chinese and non-vietnamese characters
-            for index, row in df.iterrows():
-                if not is_chinese_char(row['text']) and not is_viet_text(row['text']):
-                    df.drop(index, inplace=True)
-                else:
-                    df.at[index, 'text'] = row['text'].strip()
-                    if is_chinese_char(row['text']):
-                        df.at[index, 'lang'] = 'cn'
-                    elif is_viet_text(row['text']):
-                        df.at[index, 'lang'] = 'vn' 
+                # Remove non-chinese and non-vietnamese characters
+                if is_chinese_char(item['text']) or is_viet_text(item['text']):
+                    item['text'] = item['text'].strip()
+                    if is_chinese_char(item['text']):
+                        item['lang'] = 'cn'
+                    elif is_viet_text(item['text']):
+                        item['lang'] = 'vn'
                     else:
-                        df.at[index, 'lang'] = 'other'
+                        item['lang'] = 'other'
+                    all_files_data.append(item)
 
-            all_files_df = pd.concat([all_files_df, df], ignore_index=True)
-
-    return all_files_df
+    # return {'data': all_files_data}
+    return all_files_data
 
 

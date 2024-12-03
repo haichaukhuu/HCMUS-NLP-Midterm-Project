@@ -15,7 +15,6 @@ The processing includes:
     + Stripping whitespace from text
     + Adding a page number column
     + Adding a language column, classifying the text into chinese, vietnamese
-    + Aligning the chinese char with corresponding vietnamese char
 - Returning the cleaned dataframe with 3 columns: text, bbox, page_num, lang
 - Saving the dataframe to a csv file
 '''
@@ -68,9 +67,30 @@ def delete_file_if_no_chinese(file_path):
         print(f"Deleting {file_path.name} because it does not contain chinese characters")
         file_path.unlink()
 
-
+# example of a bbox
+    # {
+    #     "text": "四",
+    #     "bbox": [
+    #         [
+    #             125.9000015258789,
+    #             85.782470703125
+    #         ],
+    #         [
+    #             197.89999389648438,
+    #             85.782470703125
+    #         ],
+    #         [
+    #             197.89999389648438,
+    #             133.782470703125
+    #         ],
+    #         [
+    #             125.9000015258789,
+    #             133.782470703125
+    #         ]
+    #     ]
+    # },
 def parse_bbox_coords(bbox: list) -> np.ndarray:
-    return np.array(list(map(float, bbox)))
+    return np.array(bbox, dtype=float)
 
 
 # -----------------%%%%%%%%-----------------

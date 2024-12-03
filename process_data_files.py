@@ -90,7 +90,22 @@ def delete_file_if_no_chinese(file_path):
     #     ]
     # },
 def parse_bbox_coords(bbox: list) -> np.ndarray:
-    return np.array(bbox, dtype=float)
+    return np.array([(float(point[0]), float(point[1])) for point in bbox], dtype=float)
+
+# test
+# page_0_file = "extracted_text/page_0.json"
+# with open(page_0_file, 'r', encoding='utf-8-sig') as f:
+#     data = json.load(f)
+#     for item in data:
+#         if item['text'] == '四':
+#             bbox = item['bbox']
+#             print(f"BBox for '四' in page 0: {bbox}")
+#             print(f"Parsed bbox: {parse_bbox_coords(bbox)}")
+#             print(f"Dtype: {parse_bbox_coords(bbox).dtype}")
+
+#             break
+
+
 
 
 # -----------------%%%%%%%%-----------------
@@ -133,14 +148,12 @@ def process_data_files(data_dir) -> pd.DataFrame:
             # Parse bbox coordinates to numpy array
             df['bbox'] = df['bbox'].apply(parse_bbox_coords)
 
-            # Process each row's text
             # Remove non-chinese and non-vietnamese characters
             for index, row in df.iterrows():
                 if not is_chinese_char(row['text']) and not is_viet_text(row['text']):
                     df.drop(index, inplace=True)
                 else:
                     df.at[index, 'text'] = row['text'].strip()
-                    # Determine language for each row
                     if is_chinese_char(row['text']):
                         df.at[index, 'lang'] = 'cn'
                     elif is_viet_text(row['text']):
